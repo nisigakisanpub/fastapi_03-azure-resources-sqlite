@@ -1,0 +1,52 @@
+□ 起動方法
+
+cd fastapi
+(env) U:\24.develop.home\flask_to_fastapi_01\fastapi>
+
+pytest app/tests
+uvicorn app.main:app
+
+
+□ curl - コマンドプロンプト用
+
+curl -X POST http://127.0.0.1:8000/chat ^
+  -H "Content-Type: application/json" ^
+  -d "{\"messages\": [{\"role\": \"user\", \"content\": \"o4モデルは何個ある？日本語で回答して。\"}]}"
+
+↓
+
+C:\Users\nisigaki>curl -X POST http://127.0.0.1:8000/chat ^
+More?   -H "Content-Type: application/json" ^
+More?   -d "{\"messages\": [{\"role\": \"user\", \"content\": \"o4モデルは何個ある？日本語で回答して。\"}]}"
+{"message":"現時点では GPT-4 モデルは全部で４種類あります。\n\n1. gpt-4  \n2. gpt-4-0613  \n3. gpt-4-32k  \n4. gpt-4-32k-0613"}
+C:\Users\nisigaki>
+
+
+□ curl - Git Bash on Windows、ここちょっとクセありますよね
+
+FastAPIが「There was an error parsing the body」って言ってるので、サーバーには “JSONじゃない何か” が届いてる状態です。
+Git Bash でよく起きるのは「シングルクオートで囲んだJSONがそのままWindows側で変な感じに渡る」やつです。
+
+動きやすい書き方をいくつか並べます。どれかは通るはずです。
+
+●パターン1（いちばん無難）: ぜんぶダブルクオート＋バックスラッシュでエスケープ　NG
+
+curl -X POST http://127.0.0.1:8000/chat \
+  -H "Content-Type: application/json" \
+  -d "{\"messages\": [{\"role\": \"user\", \"content\": \"o4モデルは何個ある？日本語で回答して。\"}]}"
+
+これは WindowsでもLinuxでもだいたい動く鉄板 です。
+
+●Git Bashだとこっちのほうが通ることあります。　NG
+
+curl -X POST http://127.0.0.1:8000/chat \
+  -H "Content-Type: application/json" \
+  --data-raw "{\"messages\": [{\"role\": \"user\", \"content\": \"o4モデルは何個ある？日本語で回答して。\"}]}"
+
+●パターン3: JSONをファイルにして送る（確実版）　OK
+
+curl -X POST http://127.0.0.1:8000/chat \
+  -H "Content-Type: application/json" \
+  --data-binary @body.json
+
+

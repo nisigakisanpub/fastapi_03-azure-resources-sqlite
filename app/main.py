@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from openai import AzureOpenAI
 
-from app.db import init_db
-from app.routers.chat import router as chat_router
-from app.routers.product import router as product_router
-from app.routers.search import router as search_router
+from app.database.db import init_db
+from app.routes.chat import router as chat_router
+from app.routes.product import router as product_router
+from app.routes.index import router as search_router
 
 load_dotenv()
 
